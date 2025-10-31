@@ -1,1 +1,41 @@
+pipeline {
+    agent any
 
+    stages {
+        stage('Checkout Code') {
+            steps {
+                // Pull code from GitHub or local repo
+                git branch: 'main', url: 'https://github.com/your-username/your-repo.git'
+            }
+        }
+
+        stage('Build Static Files') {
+            steps {
+                echo 'Static site — no build needed (HTML/CSS/JS only)'
+            }
+        }
+
+        stage('Publish Static Website') {
+            steps {
+                // Copy static files to a folder Jenkins can serve
+                sh 'mkdir -p /var/www/html/static-site || true'
+                sh 'cp -r * /var/www/html/static-site/'
+            }
+        }
+
+        stage('Serve Website') {
+            steps {
+                echo 'Your site is now available at: http://localhost/static-site/index.html'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Static website successfully published!'
+        }
+        failure {
+            echo 'Build failed — check console output.'
+        }
+    }
+}
